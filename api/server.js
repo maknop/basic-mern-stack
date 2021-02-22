@@ -1,10 +1,19 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import MongoClient from 'mongodb';
 
 const app = express();
 const users = [];
 
-dotenv.config();
+dotenv.config({path: '../.env'});
+
+MongoClient.connect(process.env.MONGODB_CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, db) {
+    if(!err) {
+        console.log("Database Connection Established.");
+    } else {
+        console.log("There was an error connecting.");
+    }
+});
 
 app.use(express.json());
 
@@ -25,5 +34,5 @@ app.get('/', (req,res) => {
 });
 
 app.listen(process.env.API_PORT, () => {
-    console.log(`Server listening at http://localhost:${process.env.API_PORT}`);
+    console.log(`API listening at http://localhost:${process.env.API_PORT}`);
 });
