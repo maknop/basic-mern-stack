@@ -1,43 +1,27 @@
-import express, { response } from 'express';
-import dotenv from 'dotenv';
-import MongoClient from 'mongodb';
-
+const express = require('express');
+const dotenv = require('dotenv');
+const MongoClient = require('mongodb');
 const app = express();
 
+// Get environment variables
 dotenv.config({path: '../.env'});
 
 app.use(express.json());
 
 app.listen(process.env.API_PORT, () => {
     console.log(`API listening at http://localhost:${process.env.API_PORT}`);
+});
 
-    MongoClient.connect(process.env.MONGODB_CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, client) {
-        if(!err) console.log("Database connection established.");
-        else console.log("There was an error connecting.");
-    
-        const database = client.db("mydb");
-        const collection = database.collection("Users");
-        
-        app.post('/api/user', (req, res) => {
-            collection.insertOne((req.body), () => {
-                if (err) return res.status(500).send(err);
+// Connect to Mongodb database 
+MongoClient.connect(process.env.MONGODB_CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true}, function(err, db) {
+    if(!err) console.log("Database connection established.");
+    else console.log("There was an error connecting.");
 
-                res.send(req.body);
-                const newUser = req.body;
-                console.log('Adding user: ', newUser);
-            })
-        });
+    const database = db.db("mydb");
 
-        app.get('/api/users', (req, res) => {
-            collection.find({}).toArray(function(result) {
-                if (err) throw err;
-                console.log(res.json(result));
-                console.log('All users retrieved from api/users');
-            })
-        });
-          
-        app.get('/', (req,res) => {
-            res.send('App Works!');
-        });
-    });
+    // Add collections within your db.
+    const usersCollection = database.collection("Users");
+
+    app.use('/api/users', require('./routes/users')(app, usersCollection, err));
+    app.use('/api/user', require('./routes/users')(app, usersCollection, err)); 
 });
