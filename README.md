@@ -1,6 +1,6 @@
 # Basic MERN Stack
-- (Resource List)[https://github.com/maknop/basic-mern-stack#resource-list]
-- (Build/Run with Docker)[https://github.com/maknop/basic-mern-stack#build-&-run-with-docker]
+- [Resource List](https://github.com/maknop/basic-mern-stack#resource-list)
+- [Build/Run with Docker](https://github.com/maknop/basic-mern-stack#build-&-run-with-docker)
 
 ## What is it?
 TODO: Add description.
